@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\AccountMid;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,8 +13,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('account', AccountController::class)->middleware(['web']);
-Route::resource('post', PostController::class)->middleware(['web']);
+Route::resource('account', AccountController::class)->middleware(['web', AccountMid::class]);
+Route::resource('post', PostController::class)->middleware(['web', AccountMid::class]);
 Route::get('/login', function(){
     return view('login.index');
 })->middleware(['web']);
