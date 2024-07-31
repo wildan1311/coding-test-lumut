@@ -9,14 +9,13 @@
   <body>
     <nav class="nav container mb-3 d-flex justify-content-between">
         <div>
-            <h1>My Application</h1>
+            <h3>My Application</h3>
         </div>
         <div class="d-flex flex-row">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
             <a class="nav-link" href="{{route('post.index')}}">Post</a>
             <a class="nav-link" href="{{route('account.index')}}">Account</a>
             @php
-                $login = session()->get('user', 'default');
+                $login = session()->get('account', 'default');
                 if ($login == 'default') {
                     echo '<a class="nav-link" href="/login">Login</a>';
                 } else {

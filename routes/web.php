@@ -12,11 +12,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('account', AccountController::class);
-Route::resource('post', PostController::class);
+Route::resource('account', AccountController::class)->middleware(['web']);
+Route::resource('post', PostController::class)->middleware(['web']);
 Route::get('/login', function(){
     return view('login.index');
-});
+})->middleware(['web']);
+Route::get('/logout', function(){
+    Session::flush();
+    return view('login.index');
+})->middleware(['web']);
 
 Route::post('/authenticate', function(Request $request){
     $credentials = $request->validate([
@@ -24,15 +28,19 @@ Route::post('/authenticate', function(Request $request){
         'password' => 'required',
     ]);
 
-    $check = Account::where('username', $request->username)->where('password', $request->password)->get();
-    if($check == []){
-        return redirect('/login');
+    $check = Account::where('username', $request->username)->where('password', $request->password)->get()->first();
+
+    if($check == null){
+        return redirect('/login')->with([
+            'status' => 'Failed',
+            'message' => 'Login Failed',
+        ]);
     }
     else{
-        Session::put('account', $check->first());
-        return redirect('/home');
+        Session::put('account', $check);
+        return redirect()->route('post.index');
     }
-});
+})->middleware(['web']);
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
